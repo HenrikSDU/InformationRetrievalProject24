@@ -2,7 +2,25 @@ import re
 import math
 import numpy as np
 
-class tf_idf:
+class Jaccard:
+
+    def __init__(self) -> None:
+        pass
+
+    def calc(A,B):
+    
+        A = A.split()
+        B = B.split()
+        len_intersect = len(set(A) & set(B))
+        len_union = len(set(A) | set(B))
+
+        if len_union > 0:
+            return len_intersect / len_union
+        else:
+            return "len_union == 0"
+        
+
+class TF_IDF:
 
     def __init__(self) -> None:
         pass
