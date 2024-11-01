@@ -2,6 +2,7 @@
 
 import requests
 import html2text
+import wikipediaapi
 from pathlib import Path
 
 from langchain.document_loaders import DirectoryLoader
@@ -32,13 +33,11 @@ def split_text(documents: list[Document]):
     return chunks
 
 # Function to convert HTML to Markdown and save to a file
+converter = html2text.HTML2Text()
 def html_to_markdown(url, output_file):
     # Fetch the HTML content from the URL
     response = requests.get(url)
     html_content = response.text
-
-    # Create an instance of HTML2Text
-    converter = html2text.HTML2Text()
 
     # Convert the HTML content to Markdown
     markdown_content = converter.handle(html_content)
@@ -48,6 +47,26 @@ def html_to_markdown(url, output_file):
         file.write(markdown_content)
     print(f'Markdown content saved to {output_file}')
 
+
+
+# Initialize Wikipedia API
+wiki_wiki = wikipediaapi.Wikipedia('IR24 (henrik.bongers@t-online.de)','en')
+def wiki_to_text(article, output_file):
+    # Get the Wikipedia page
+    page = wiki_wiki.page(article)
+
+    if page.exists():
+        html_content = page.text
+
+        # Convert HTML to Markdown
+        markdown_content = converter.handle(html_content)
+
+        # Save to file
+        with open(output_file, 'w', encoding='utf-8') as file:
+            file.write(markdown_content)
+        print(article + '\'s content saved successfully!')
+    else:
+        print("Article " + article + " not found!")
 
 
 # Taken from RetrievalTutorial.
@@ -76,3 +95,6 @@ def download_file(url):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         raise
+
+
+
